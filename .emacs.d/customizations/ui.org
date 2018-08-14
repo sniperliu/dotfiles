@@ -1,0 +1,115 @@
+#+TITLE UI Configuration
+
+Load Emacs UI customizations. Here we set up a color theme, enable/disable different interface elemenets and so on.
+
+* Line number
+#+begin_src emacs-lisp
+;; Show line numbers when run in the graphical mode
+(when (display-graphic-p)
+  (global-linum-mode 1))
+
+;; Set size of line numbers
+(defun setup-linum-ui ()
+  (set-face-attribute 'linum nil :height 100 :foreground "SteelBlue"))
+
+(when (display-graphic-p)
+  (setup-linum-ui))
+#+end_src
+
+* Theme
+#+begin_src emacs-lisp
+(use-package solarized-theme
+  :ensure t
+  :config
+  (load-theme 'solarized-light t))
+
+(defun toggle-ui ()
+  (interactive)
+  (heaven-and-hell-toggle-theme)
+  (setup-linum-ui))
+
+(use-package heaven-and-hell
+  :ensure t
+  :init
+  (setq heaven-and-hell-themes
+        '((light . solarized-light)
+          (dark  . solarized-dark)))
+  :hook (after-init . heaven-and-hell-init-hook)
+  :bind (("C-x l" . toggle-ui)))
+#+end_src
+
+* Font
+#+begin_src emacs-lisp
+(when (window-system)
+  (set-default-font "Fira Code"))
+;; Ligatures hangs eshell
+;; (let ((alist '((33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
+;;                (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
+;;                (36 . ".\\(?:>\\)")
+;;                (37 . ".\\(?:\\(?:%%\\)\\|%\\)")
+;;                (38 . ".\\(?:\\(?:&&\\)\\|&\\)")
+;;                (42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*/>]\\)")
+;;                (43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
+;;                (45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
+;;                (46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
+;;                (47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[*/=>]\\)")
+;;                (48 . ".\\(?:x[a-zA-Z]\\)")
+;;                (58 . ".\\(?:::\\|[:=]\\)")
+;;                (59 . ".\\(?:;;\\|;\\)")
+;;                (60 . ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\||>\\)\\|[*$+~/<=>|-]\\)")
+;;                (61 . ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|[<=>~]\\)")
+;;                (62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
+;;                (63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
+;;                (91 . ".\\(?:]\\)")
+;;                (92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
+;;                (94 . ".\\(?:=\\)")
+;;                (119 . ".\\(?:ww\\)")
+;;                (123 . ".\\(?:-\\)")
+;;                (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
+;;                (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)")
+;;                )
+;;              ))
+;;   (dolist (char-regexp alist)
+;;     (set-char-table-range composition-function-table (car char-regexp)
+;;                           `([,(cdr char-regexp) 0 font-shape-gstring]))))
+(set-face-attribute 'default nil :height 130)
+(setq mac-allow-anti-aliasing t)
+#+end_src
+
+* Smart Line
+#+begin_src emacs-lisp
+(use-package smart-mode-line
+  :ensure t
+  :init
+  (sml/setup)
+  :config
+  (progn
+    (setq sml/name-width 40)
+    (setq sml/mode-width 'full)
+    (set-face-attribute 'mode-line nil
+      :box nil)
+    (add-to-list 'sml/replacer-regexp-list '("^~/src/" ":src:") t)))
+#+end_src
+
+* Misc
+#+begin_src emacs-lisp
+;; Disable tool bar
+(tool-bar-mode -1)
+;; Turn off menu bar in console
+(unless (display-graphic-p)
+  (menu-bar-mode -1))
+;; Don't show native OS scroll bars
+(when (fboundp 'scroll-bar-mode)
+  (scroll-bar-mode -1))
+;; Full path in title bar
+(setq-default frame-title-format "%b (%f)")
+;; No cursor blinking
+(blink-cursor-mode 0)
+;; Disable bell
+(setq ring-bell-function 'ignore)
+;; Indicate empty lines
+(setq-default indicate-empty-lines 1)
+
+(setq inhibit-startup-screen t)
+(add-to-list 'initial-frame-alist '(maximized))
+#+end_src

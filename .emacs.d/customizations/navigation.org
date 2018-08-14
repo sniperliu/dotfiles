@@ -1,0 +1,78 @@
+#+Title navigation
+
+Customizations for easier navigation between files and buffers
+
+* Projectile
+#+begin_src emacs-lisp
+(use-package projectile
+  :ensure t
+  :bind-keymap (("s-p"   . projectile-command-map)
+		("C-c p" . projectile-command-map))
+  :config
+  (projectile-global-mode)
+  (setq projectile-enable-caching t))
+
+(use-package helm
+  :ensure t
+  :bind (("M-x" . helm-M-x)
+         ("C-x C-f" . helm-find-files)
+	 ("C-x f" . helm-recentf))
+  :config
+  (helm-mode 1))
+
+(use-package helm-projectile
+  :ensure t
+  :after (helm projectile)
+  :config
+  (helm-projectile-on))
+#+end_src
+
+* Git
+#+begin_src emacs-lisp
+(use-package magit
+  :ensure t
+  :bind ("C-x g" . magit-status))
+
+(use-package git-gutter
+  :ensure t)
+#+end_src
+
+* Misc
+#+begin_src emacs-lisp
+(use-package ido
+  :ensure t
+  :config
+  ;; Allow partial matches, e.g. "ne" will match navigation.el in this
+  ;; directory
+  (setq ido-enable-flex-matching t)
+  ;; Turn this behavior off because it's annoying, e.g. when pressing
+  ;; C-x C-f to create a new file, don't try to use existing
+  ;; files/buffers names
+  (setq ido-use-filename-at-point nil)
+  ;; Ido everywhere, even in dired
+  (ido-everywhere t)
+  ;; Easier navigation with C-x C-f
+  (ido-mode 1))
+
+(use-package ido-vertical-mode
+  :ensure t
+  :after (ido)
+  :config
+  ;; Enable vertical mode for ido
+  (ido-vertical-mode 1))
+
+;; Use ibuffer for displaying currenly opened buffers list
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
+;; Enable windmove keybindings. Jump between windows with shift +
+;; direction arrow
+(windmove-default-keybindings)
+
+;; unset some global key bindings
+(global-unset-key "\C-o")
+
+;; short-cut to open the init.el
+(global-set-key "\C-oC" (lambda ()
+                          (interactive)
+                          (find-file "~/.emacs.d/init.el")))
+#+end_src

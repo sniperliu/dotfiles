@@ -1,0 +1,106 @@
+#+TITLE Clojure development workflow configuration
+
+* Cojure mode
+
+#+begin_src emacs-lisp
+(use-package clojure-mode
+  :ensure t
+  :init
+  (add-hook 'clojure-mode-hook 'yas-minor-mode)
+  (add-hook 'clojure-mode-hook 'linum-mode)
+  ;; (add-hook 'clojure-mode-hook 'subword-mode)
+  ;; (add-hook 'clojure-mode-hook 'smartparens-mode)
+  (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
+  (add-hook 'clojure-mode-hook 'eldoc-mode)
+  ;; (add-hook 'clojure-mode-hook 'idle-highlight-mode))
+  )
+#+end_src
+
+* Paredit
+#+begin_src emacs-lisp
+(use-package paredit
+  :ensure t
+  :config
+  (add-hook 'lisp-mode-hook       'paredit-mode)
+  (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
+  (add-hook 'clojure-mode-hook    'paredit-mode)
+  (add-hook 'cider-repl-mode-hook 'paredit-mode))
+#+end_src
+
+* Cider
+
+#+begin_src emacs-lisp
+(use-package cider
+  :ensure t
+  :init
+  ;; Clojure mode
+  (setq clojure-indent-style :always-indent)
+  ;; REPL history file
+  (setq cider-repl-history-file (format "%s/.cider-history" user-emacs-directory))
+  ;; nicer font lock in REPL
+  (setq cider-repl-use-clojure-font-lock t)
+  ;; result prefix for the REPL
+  (setq cider-repl-result-prefix ";; => ")
+  ;; never ending REPL history
+  (setq cider-repl-wrap-history t)
+  ;; looong history
+  (setq cider-repl-history-size 3000)
+  ;; nice pretty printing
+  (setq cider-repl-use-pretty-printing t)
+
+  ;; lein cljs repl
+  (setq cider-cljs-lein-repl
+    "(do (require 'figwheel-sidecar.repl-api)
+       (figwheel-sidecar.repl-api/start-figwheel!)
+       (figwheel-sidecar.repl-api/cljs-repl))")
+
+  (add-hook 'cider-mode-hook 'clj-refactor-mode)
+  ;; eldoc for clojure
+  (add-hook 'cider-mode-hook 'eldoc-mode)
+
+  (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode)
+
+  ;; error buffer not popping up
+  (setq cider-show-error-buffer nil)
+
+  ;; company mode for completion
+  (add-hook 'cider-repl-mode-hook 'company-mode)
+  (add-hook 'cider-mode-hook      'company-mode))
+#+end_src
+
+* clj-refactor
+
+#+begin_src emacs-lisp
+(use-package clj-refactor
+  :ensure t
+  :init
+  (add-hook 'clojure-mode-hook
+    (lambda ()
+      (clj-refactor-mode 1)
+      ;; insert keybinding setup here
+      (cljr-add-keybindings-with-prefix "C-c RET")))
+  (add-hook 'clojure-mode-hook #'yas-minor-mode)
+  ;; no auto sort
+  (setq cljr-auto-sort-ns nil)
+  ;; do not prefer prefixes when using clean-ns
+  (setq cljr-favor-prefix-notation nil))
+#+end_src
+
+* snippet
+
+#+begin_src emacs-lisp
+(use-package clojure-snippets
+  :ensure t
+  :after (yasnippet))
+#+end_src
+
+* highlight
+
+#+begin_src emacs-lisp
+(use-package hl-sexp
+  :ensure t
+  :config
+  (add-hook 'clojure-mode-hook    'hl-sexp-mode)
+  (add-hook 'lisp-mode-hook       'hl-sexp-mode)
+  (add-hook 'emacs-lisp-mode-hook 'hl-sexp-mode))
+#+end_src

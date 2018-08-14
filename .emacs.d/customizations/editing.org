@@ -1,0 +1,72 @@
+#+title editing
+
+More convinient editing
+
+* Company
+#+begin_src emacs-lisp
+(use-package company
+  :ensure t
+  :init
+  (setq company-idle-delay 0.5)
+  (setq company-tooltip-limit 10)
+  (setq company-minimum-prefix-length 2)
+  ;; invert the navigation direction if the completion popup-isearch-match
+  ;; is displayed on top
+  (setq company-tooltip-flip-when-above t)
+  :config
+  (global-company-mode 1))
+#+end_src
+
+* Snippet
+#+begin_src emacs-lisp
+(use-package yasnippet
+  :ensure t
+  :config
+  (yas-global-mode 1))
+#+end_src
+
+* Flycheck
+
+#+begin_src emacs-lisp
+(use-package flycheck
+  :ensure t
+  :config
+  (global-flycheck-mode)
+  (add-hook 'after-init-hook 'global-flycheck-mode))
+#+end_src
+
+* Misc
+#+begin_src emacs-lisp
+(use-package beacon
+  :ensure t
+  :init
+  (setq beacon-push-mark 35)
+  (setq beacon-color "#888888")
+  :config
+  (beacon-mode 1))
+
+(use-package hideshow
+  :ensure t)
+
+(use-package expand-region
+  :ensure t)
+
+(use-package rainbow-delimiters
+  :ensure t)
+
+;; Highlights matching parenthesis
+(show-paren-mode 1)
+
+;; Delete trailing whitespaces when saving file
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; Disable backups and auto save, use VCS instead!
+(setq backup-inhibited t)
+(setq auto-save-default nil)
+
+;; Show column numbers in mode line
+(column-number-mode 1)
+
+;; don't use tabs for indent
+(setq-default indent-tabs-mode nil)
+#+end_src

@@ -1,0 +1,8 @@
+# emacs config folder
+.emacs.d/vendors
+.emacs.d/customizations/*.el
+
+# common
+*~
+*.cache
+*bookmarks*
