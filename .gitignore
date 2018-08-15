@@ -1,6 +1,10 @@
 # emacs config folder
 .emacs.d/vendors
 .emacs.d/customizations/*.el
+.emacs.d/private*.el
+.emacs.d/eshell
+.emacs.d/quelpa
+.emacs.d/.*
 
 # common
 *~

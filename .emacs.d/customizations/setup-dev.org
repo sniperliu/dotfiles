@@ -1,0 +1,33 @@
+#+title: Development
+
+* Haskell
+
+#+begin_src emacs-lisp
+(use-package intero
+  :ensure t
+  :config
+  (add-hook 'haskell-mode-hook 'intero-mode))
+#+end_src
+
+* Markdown
+
+#+begin_src emacs-lisp
+(use-package markdown-mode
+  :ensure t)
+
+(use-package markdown-preview-mode
+  :ensure t)
+#+end_src
+
+* Rust
+
+#+begin_src emacs-lisp
+(use-package rust-mode
+  :ensure t)
+
+(use-package toml-mode
+  :ensure t)
+
+(use-package flycheck-rust
+  :ensure t)
+#+end_src

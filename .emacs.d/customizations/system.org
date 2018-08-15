@@ -1,4 +1,20 @@
-#+title system
+#+title: system
+
+* Package management
+
+#+begin_src emacs-lisp
+(use-package quelpa
+  :ensure t)
+
+(use-package quelpa-use-package
+  :ensure t
+  :init
+  (setq quela-update-melpa-p nil))
+
+(use-package use-package-chords
+  :ensure t
+  :config (key-chord-mode 1))
+#+end_src
 
 * Environment
 

@@ -1,4 +1,4 @@
-#+TITLE UI Configuration
+#+TITLE: UI Configuration
 
 Load Emacs UI customizations. Here we set up a color theme, enable/disable different interface elemenets and so on.
 
@@ -11,9 +11,6 @@ Load Emacs UI customizations. Here we set up a color theme, enable/disable diffe
 ;; Set size of line numbers
 (defun setup-linum-ui ()
   (set-face-attribute 'linum nil :height 100 :foreground "SteelBlue"))
-
-(when (display-graphic-p)
-  (setup-linum-ui))
 #+end_src
 
 * Theme
@@ -21,7 +18,8 @@ Load Emacs UI customizations. Here we set up a color theme, enable/disable diffe
 (use-package solarized-theme
   :ensure t
   :config
-  (load-theme 'solarized-light t))
+  (load-theme 'solarized-light t)
+  (setup-linum-ui))
 
 (defun toggle-ui ()
   (interactive)
@@ -39,6 +37,7 @@ Load Emacs UI customizations. Here we set up a color theme, enable/disable diffe
 #+end_src
 
 * Font
+
 #+begin_src emacs-lisp
 (when (window-system)
   (set-default-font "Fira Code"))
@@ -76,10 +75,45 @@ Load Emacs UI customizations. Here we set up a color theme, enable/disable diffe
 (setq mac-allow-anti-aliasing t)
 #+end_src
 
+* Folding
+
+#+begin_src emacs-lisp
+(use-package origami
+  :ensure quelpa
+  :quelpa (origami :repo "seblemaguer/origami.el" :fetcher github)
+  :custom
+  (origami-show-fold-header t)
+
+  :custom-face
+  (origami-fold-replacement-face ((t (:inherit magit-diff-context-highlight))))
+  (origami-fold-fringe-face ((t (:inherit magit-diff-context-highlight))))
+
+  :init
+  (defhydra origami-hydra (:color blue :hint none)
+    "
+      _:_: recursively toggle node       _a_: toggle all nodes    _t_: toggle node
+      _o_: show only current node        _u_: undo                _r_: redo
+      _R_: reset
+      "
+    (":" origami-recursively-toggle-node)
+    ("a" origami-toggle-all-nodes)
+    ("t" origami-toggle-node)
+    ("o" origami-show-only-node)
+    ("u" origami-undo)
+    ("r" origami-redo)
+    ("R" origami-reset))
+
+  :bind (:map origami-mode-map
+              ("C-:" . origami-hydra/body))
+  :config
+  (face-spec-reset-face 'origami-fold-header-face))
+#+end_src
+
 * Smart Line
 #+begin_src emacs-lisp
 (use-package smart-mode-line
   :ensure t
+  :if window-system
   :init
   (sml/setup)
   :config
@@ -89,6 +123,17 @@ Load Emacs UI customizations. Here we set up a color theme, enable/disable diffe
     (set-face-attribute 'mode-line nil
       :box nil)
     (add-to-list 'sml/replacer-regexp-list '("^~/src/" ":src:") t)))
+#+end_src
+
+* Startup
+#+begin_src emacs-lisp
+(setq inhibit-startup-screen t)
+#+end_src
+
+* Keys
+#+begin_src emacs-lisp
+(use-package hydra
+  :ensure t)
 #+end_src
 
 * Misc
@@ -109,7 +154,4 @@ Load Emacs UI customizations. Here we set up a color theme, enable/disable diffe
 (setq ring-bell-function 'ignore)
 ;; Indicate empty lines
 (setq-default indicate-empty-lines 1)
-
-(setq inhibit-startup-screen t)
-(add-to-list 'initial-frame-alist '(maximized))
 #+end_src

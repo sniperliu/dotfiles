@@ -1,4 +1,4 @@
-#+title editing
+#+title: editing
 
 More convinient editing
 
@@ -21,7 +21,11 @@ More convinient editing
 #+begin_src emacs-lisp
 (use-package yasnippet
   :ensure t
+  :after company
   :config
+  ;; Adding yasnippet support to company
+  (add-to-list 'company-backends '(company-yasnippet))
+
   (yas-global-mode 1))
 #+end_src
 
@@ -33,6 +37,14 @@ More convinient editing
   :config
   (global-flycheck-mode)
   (add-hook 'after-init-hook 'global-flycheck-mode))
+#+end_src
+
+* Fixme
+
+#+begin_src emacs-lisp
+(use-package fic-mode
+  :ensure t
+  :init (add-hook 'prog-mode-hook 'fic-mode))
 #+end_src
 
 * Misc

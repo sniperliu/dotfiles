@@ -29,25 +29,28 @@
 
 (load-library "url-handlers")
 
-(add-to-list 'load-path (format "%s/plugins" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "plugins" user-emacs-directory))
 
 ;; don't let Customize mess with my .emacs
 ;; (setq custom-file (concat "~/.emacs.d/custom.el"))
 ;; (load custom-file 'noerror)
 
 ;; Load private variables
-;; (when (file-exists-p (format "%s/private-variables.el" generated-basedir))
-;;   (load-file (format "%s/private-variables.el" generated-basedir)))
+(when (file-exists-p (expand-file-name "private-variables.el" user-emacs-directory))
+  (load-file (expand-file-name "private-variables.el" user-emacs-directory)))
 
 ;; Setup everything
 ;; (org-babel-load-file (format "%s/main.org" user-emacs-directory))
-(defvar customizations-dir (format "%s/customizations" user-emacs-directory))
-(dolist (file '("ui.org"
+(defvar customizations-dir (expand-file-name "customizations" user-emacs-directory))
+(dolist (file '("system.org"
+		"ui.org"
 		"editing.org"
 		"navigation.org"
-                "system.org"
-                "setup-clojure.org"))
-  (org-babel-load-file (format "%s/%s" customizations-dir file)))
+                "org-mode.org"
+                "reading.org"
+                "setup-clojure.org"
+                "setup-dev.org"))
+  (org-babel-load-file (expand-file-name file customizations-dir)))
 
 (provide 'init)
 
@@ -66,7 +69,7 @@
  '(cua-normal-cursor-color "#657b83")
  '(cua-overwrite-cursor-color "#b58900")
  '(cua-read-only-cursor-color "#859900")
- '(custom-enabled-themes (quote (solarized-light)))
+ '(custom-enabled-themes (quote (solarized-dark)))
  '(custom-safe-themes
    (quote
     ("c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
@@ -99,9 +102,10 @@
  '(nrepl-message-colors
    (quote
     ("#dc322f" "#cb4b16" "#b58900" "#546E00" "#B4C342" "#00629D" "#2aa198" "#d33682" "#6c71c4")))
+ '(origami-show-fold-header t t)
  '(package-selected-packages
    (quote
-    (clj-refactor solarized-theme org-plus-contrib use-package)))
+    (quelpa-use-package quelpa intero ox-reveal plantuml-mode org-capture org-agenda quela-use-package quela fic-mode clj-refactor solarized-theme org-plus-contrib use-package)))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#eee8d5" 0.2))
@@ -142,4 +146,5 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(origami-fold-fringe-face ((t (:inherit magit-diff-context-highlight))))
+ '(origami-fold-replacement-face ((t (:inherit magit-diff-context-highlight)))))

@@ -1,4 +1,4 @@
-#+Title navigation
+#+Title: navigation
 
 Customizations for easier navigation between files and buffers
 
@@ -37,6 +37,31 @@ Customizations for easier navigation between files and buffers
   :ensure t)
 #+end_src
 
+* Window
+
+#+begin_src emacs-lisp
+(use-package ace-window
+  :ensure t
+  :bind* ("M-o" . ace-window)
+  :init (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+#+end_src
+
+* Cursor
+
+#+begin_src emacs-lisp
+(use-package ace-jump-mode
+  :disabled t
+  :bind ("C-c <SPC>" . ace-jump-mode))
+
+(use-package avy
+  :ensure t
+  :bind ("C-." . avy-goto-word-1)
+  :config (setq avy-all-windows nil))
+
+(use-package expand-region
+  :bind ("C-=" . er/expand-region))
+#+end_src
+
 * Misc
 #+begin_src emacs-lisp
 (use-package ido
@@ -63,10 +88,6 @@ Customizations for easier navigation between files and buffers
 
 ;; Use ibuffer for displaying currenly opened buffers list
 (global-set-key (kbd "C-x C-b") 'ibuffer)
-
-;; Enable windmove keybindings. Jump between windows with shift +
-;; direction arrow
-(windmove-default-keybindings)
 
 ;; unset some global key bindings
 (global-unset-key "\C-o")

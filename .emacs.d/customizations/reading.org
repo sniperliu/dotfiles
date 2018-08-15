@@ -1,0 +1,77 @@
+#+title: Reading
+
+* General
+
+#+begin_src emacs-lisp
+(defvar biblio-dir "~/Dropbox/org/reading/biblio")
+#+end_src
+
+* PDF
+
+#+begin_src emacs-lisp
+(use-package pdf-tools
+  :ensure t
+  ;; :after hydra
+  :config
+
+  ;; Install what need to be installed !
+  (pdf-tools-install t t t)
+  ;; open pdfs scaled to fit page
+  (setq-default pdf-view-display-size 'fit-page)
+  ;; automatically annotate highlights
+  (setq pdf-annot-activate-created-annotations t)
+  ;; use normal isearch
+  (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+  ;; more fine-grained zooming
+  (setq pdf-view-resize-factor 1.1)
+
+  (add-hook 'pdf-view-mode-hook
+            (lambda ()
+              (pdf-misc-size-indication-minor-mode)
+              (pdf-links-minor-mode)
+              (pdf-isearch-minor-mode)
+              (cua-mode 0)
+              (linum-mode 0)))
+
+  (add-to-list 'auto-mode-alist (cons "\\.pdf$" 'pdf-view-mode)))
+#+end_src
+
+* Bibtex
+
+#+begin_src emacs-lisp
+(use-package helm-bibtex
+  :ensure t
+  :config
+  (setq helm-bibtex-bibliography (expand-file-name "index.bib" biblio-dir) ;; where your references are stored
+        helm-bibtex-library-path (expand-file-name "lib/" biblio-dir) ;; where your pdfs etc are stored
+        helm-bibtex-notes-path (expand-file-name "index.org" biblio-dir) ;; where your notes are stored
+        bibtex-completion-bibliography (expand-file-name "index.bib" biblio-dir) ;; writing completion
+        bibtex-completion-notes-path (expand-file-name "index.org" biblio-dir)))
+#+end_src
+
+* org
+
+#+begin_src emacs-lisp
+(use-package org-ref
+  :after org
+  :ensure t
+  :chords
+  (("uu"  . org-ref-cite-hydra/body))
+  :init
+  (setq org-ref-completion-library 'org-ref-helm-cite
+        org-ref-notes-directory biblio-dir
+        org-ref-bibliography-notes (expand-file-name "index.org" biblio-dir)
+        org-ref-default-bibliography '(expand-file-name "index.bib" biblio-dir)
+        org-ref-pdf-directory (expand-file-name "lib/" biblio-dir))
+
+  :config
+  (add-hook 'org-export-before-parsing-hook 'orcp-citeproc))
+
+(use-package interleave
+  :ensure t
+  :bind ("C-x i" . interleave-mode)
+  :config
+  (setq interleave-split-direction 'horizontal
+        interleave-split-lines 20
+        interleave-disable-narrowing t))
+#+end_src
