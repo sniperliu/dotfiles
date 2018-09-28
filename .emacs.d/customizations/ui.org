@@ -80,7 +80,7 @@ Load Emacs UI customizations. Here we set up a color theme, enable/disable diffe
 #+begin_src emacs-lisp
 (use-package origami
   :ensure quelpa
-  :quelpa (origami :repo "seblemaguer/origami.el" :fetcher github)
+  :quelpa (origami :repo "gregsexton/origami.el" :fetcher github)
   :custom
   (origami-show-fold-header t)
 
@@ -106,7 +106,8 @@ Load Emacs UI customizations. Here we set up a color theme, enable/disable diffe
   :bind (:map origami-mode-map
               ("C-:" . origami-hydra/body))
   :config
-  (face-spec-reset-face 'origami-fold-header-face))
+  (face-spec-reset-face 'origami-fold-header-face)
+  (global-origami-mode))
 #+end_src
 
 * Smart Line
@@ -127,7 +128,11 @@ Load Emacs UI customizations. Here we set up a color theme, enable/disable diffe
 
 * Startup
 #+begin_src emacs-lisp
-(setq inhibit-startup-screen t)
+(use-package emacs
+  :init
+  (setq inhibit-startup-screen t)
+  ;; maximaze the frame when startup
+  (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 #+end_src
 
 * Keys
@@ -138,20 +143,24 @@ Load Emacs UI customizations. Here we set up a color theme, enable/disable diffe
 
 * Misc
 #+begin_src emacs-lisp
-;; Disable tool bar
-(tool-bar-mode -1)
-;; Turn off menu bar in console
-(unless (display-graphic-p)
-  (menu-bar-mode -1))
-;; Don't show native OS scroll bars
-(when (fboundp 'scroll-bar-mode)
-  (scroll-bar-mode -1))
-;; Full path in title bar
-(setq-default frame-title-format "%b (%f)")
-;; No cursor blinking
-(blink-cursor-mode 0)
-;; Disable bell
-(setq ring-bell-function 'ignore)
-;; Indicate empty lines
-(setq-default indicate-empty-lines 1)
+(use-package emacs
+  :init
+  ;; Disable tool bar
+  (tool-bar-mode -1)
+  ;; Turn off menu bar in console
+  (unless (display-graphic-p)
+    (menu-bar-mode -1))
+  ;; Don't show native OS scroll bars
+  (when (fboundp 'scroll-bar-mode)
+    (scroll-bar-mode -1))
+  ;; Full path in title bar
+  (setq-default frame-title-format "%b (%f)")
+  ;; No cursor blinking
+  (blink-cursor-mode 0)
+  ;; Disable bell
+  (setq ring-bell-function 'ignore)
+  ;; Indicate empty lines
+  (setq-default indicate-empty-lines 1)
+  ;; Disable dialog box
+  (setq use-dialog-box nil))
 #+end_src

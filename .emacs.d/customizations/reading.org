@@ -11,6 +11,7 @@
 #+begin_src emacs-lisp
 (use-package pdf-tools
   :ensure t
+  :defer t
   ;; :after hydra
   :config
 
@@ -41,6 +42,7 @@
 #+begin_src emacs-lisp
 (use-package helm-bibtex
   :ensure t
+  :defer t
   :config
   (setq helm-bibtex-bibliography (expand-file-name "index.bib" biblio-dir) ;; where your references are stored
         helm-bibtex-library-path (expand-file-name "lib/" biblio-dir) ;; where your pdfs etc are stored
@@ -55,6 +57,7 @@
 (use-package org-ref
   :after org
   :ensure t
+  :defer t
   :chords
   (("uu"  . org-ref-cite-hydra/body))
   :init

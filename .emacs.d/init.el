@@ -9,6 +9,7 @@
 (setq package-check-signature nil)
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 
 (setq package-user-dir (concat user-emacs-directory "vendors"))
@@ -105,7 +106,7 @@
  '(origami-show-fold-header t t)
  '(package-selected-packages
    (quote
-    (quelpa-use-package quelpa intero ox-reveal plantuml-mode org-capture org-agenda quela-use-package quela fic-mode clj-refactor solarized-theme org-plus-contrib use-package)))
+    (helm-ag quelpa-use-package quelpa intero ox-reveal plantuml-mode org-capture org-agenda quela-use-package quela fic-mode clj-refactor solarized-theme org-plus-contrib use-package)))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#eee8d5" 0.2))

@@ -25,6 +25,9 @@ Customizations for easier navigation between files and buffers
   :after (helm projectile)
   :config
   (helm-projectile-on))
+
+(use-package helm-ag
+  :ensure t)
 #+end_src
 
 * Git
