@@ -1,5 +1,12 @@
 #+TITLE: Clojure development workflow configuration
 
+* sayid
+
+#+begin_src emacs-lisp
+(use-package sayid
+  :ensure t)
+#+end_src
+
 * Cojure mode
 
 #+begin_src emacs-lisp
@@ -13,7 +20,8 @@
   (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
   (add-hook 'clojure-mode-hook 'eldoc-mode)
   ;; (add-hook 'clojure-mode-hook 'idle-highlight-mode))
-  )
+  :config
+  (sayid-setup-package))
 #+end_src
 
 * Paredit
