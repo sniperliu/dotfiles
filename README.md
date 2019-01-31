@@ -6,11 +6,8 @@ Setup the MacOS everywhere, auto install the development tools mainly fish shell
 
 1. Git
 1. Ruby
-1. Homebrew
 
 ```shell
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-brew install git
 git clone https://github.com/sniperliu/dotfiles
 cd dotfiles
 ./bootstrap.sh
@@ -21,8 +18,6 @@ cd dotfiles
 ## Settings
 
 ### OS
-
-* 
 
 ### Fish Shell
 
@@ -40,3 +35,4 @@ cd dotfiles
 1. https://github.com/eigenhombre/emacs-config
 1. https://github.com/flyingmachine/emacs-for-clojure
 1. https://github.com/emacs-tw/awesome-emacs
+1. https://github.com/netpyoung/netpyoung.dotfiles
