@@ -10,7 +10,7 @@ Setup the MacOS everywhere, auto install the development tools mainly fish shell
 ```shell
 git clone https://github.com/sniperliu/dotfiles
 cd dotfiles
-./bootstrap.sh
+./install.sh
 ```
 
 ## Installation
