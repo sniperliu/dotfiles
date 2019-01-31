@@ -26,6 +26,9 @@ Customizations for easier navigation between files and buffers
   :config
   (helm-projectile-on))
 
+(use-package ag
+  :ensure t)
+
 (use-package helm-ag
   :ensure t)
 #+end_src
@@ -65,6 +68,16 @@ Customizations for easier navigation between files and buffers
   :bind ("C-=" . er/expand-region))
 #+end_src
 
+* Powerline
+
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package powerline
+  ;;   :ensure t
+  ;;   :config
+  ;;   (require 'powerline)
+  ;;   (powerline-default-theme))
+#+END_SRC
+
 * Misc
 #+begin_src emacs-lisp
 (use-package ido
@@ -80,7 +93,7 @@ Customizations for easier navigation between files and buffers
   ;; Ido everywhere, even in dired
   (ido-everywhere t)
   ;; Easier navigation with C-x C-f
-  (ido-mode 1))
+  (ido-mode -1))
 
 (use-package ido-vertical-mode
   :ensure t
@@ -89,14 +102,16 @@ Customizations for easier navigation between files and buffers
   ;; Enable vertical mode for ido
   (ido-vertical-mode 1))
 
-;; Use ibuffer for displaying currenly opened buffers list
-(global-set-key (kbd "C-x C-b") 'ibuffer)
+(use-package emacs
+  :config
+  ;; Use ibuffer for displaying currenly opened buffers list
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
 
-;; unset some global key bindings
-(global-unset-key "\C-o")
+  ;; unset some global key bindings
+  (global-unset-key "\C-o")
 
-;; short-cut to open the init.el
-(global-set-key "\C-oC" (lambda ()
-                          (interactive)
-                          (find-file "~/.emacs.d/init.el")))
+  ;; short-cut to open the init.el
+  (global-set-key "\C-oC" (lambda ()
+                            (interactive)
+                            (find-file "~/.emacs.d/init.el"))))
 #+end_src

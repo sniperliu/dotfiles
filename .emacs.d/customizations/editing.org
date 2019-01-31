@@ -39,7 +39,14 @@ More convinient editing
   :ensure t
   :config
   (global-flycheck-mode)
-  (add-hook 'after-init-hook 'global-flycheck-mode))
+  (add-hook 'after-init-hook #'global-flycheck-mode))
+#+end_src
+
+* Multi-cursors
+
+#+begin_src emacs-lisp
+(use-package multiple-cursors
+  :ensure t)
 #+end_src
 
 * Fixme
@@ -48,6 +55,18 @@ More convinient editing
 (use-package fic-mode
   :ensure t
   :init (add-hook 'prog-mode-hook 'fic-mode))
+#+end_src
+
+* Column Indicator
+#+begin_src emacs-lisp
+(use-package fill-column-indicator
+    :ensure t
+    :config
+    (setq fci-rule-column 100)
+    (setq fci-rule-color "#553333")
+    (setq fci-rule-width 5)
+    (setq fci-always-use-textual-rule nil)
+    (turn-on-fci-mode))
 #+end_src
 
 * Misc
@@ -69,19 +88,32 @@ More convinient editing
 (use-package rainbow-delimiters
   :ensure t)
 
-;; Highlights matching parenthesis
-(show-paren-mode 1)
+(use-package emacs
+  :config
+  ;; Ask "y" or "n" instead of "yes" or "no". Yes, laziness is great.
+  (fset 'yes-or-no-p 'y-or-n-p)
 
-;; Delete trailing whitespaces when saving file
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+  ;; Highlights matching parenthesis
+  (show-paren-mode t)
 
-;; Disable backups and auto save, use VCS instead!
-(setq backup-inhibited t)
-(setq auto-save-default nil)
+  ;; Highlight tabulations
+  (setq-default highlight-tabs t)
 
-;; Show column numbers in mode line
-(column-number-mode 1)
+  ;; Show trailing white spaces
+  (setq-default show-trailing-whitespace t)
 
-;; don't use tabs for indent
-(setq-default indent-tabs-mode nil)
+  ;; Delete trailing whitespaces when saving file
+  (add-hook 'before-save-hook 'whitespace-cleanup)
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+  ;; Disable backups and auto save, use VCS instead!
+  (setq make-backup-files nil)
+  (setq backup-inhibited t)
+  (setq auto-save-default nil)
+
+  ;; Show column numbers in mode line
+  (column-number-mode 1)
+
+  ;; don't use tabs for indent
+  (setq-default indent-tabs-mode nil))
 #+end_src

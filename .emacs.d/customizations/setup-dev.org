@@ -39,3 +39,27 @@
   :ensure t
   :pin melpa-stable)
 #+end_src
+
+* Lux
+
+#+begin_src emacs-lisp
+;; (use-package lux-mode
+;;   :ensure t
+;;   :quelpa '(lux-mode :fetcher github :repo "LuxLang/lux"
+;;             :files "lux-mode/" :stable t))
+#+end_src
+
+* Yaml
+
+#+begin_src emacs-lisp
+(use-package yaml-mode
+  :ensure t
+  :mode "\\.yml\\'")
+#+end_src
+* Docker
+
+#+begin_src emacs-lisp
+(use-package dockerfile-mode
+  :ensure t
+  :mode "Dockerfile\\'")
+#+end_src

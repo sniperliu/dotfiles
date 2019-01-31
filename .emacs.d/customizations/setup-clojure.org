@@ -60,7 +60,8 @@
   :ensure t
   :init
   ;; Clojure mode
-  (setq clojure-indent-style :always-indent)
+  ;; (setq clojure-indent-style :always-indent)
+  ;; (setq clojure-align-forms-automatically nil)
   ;; REPL history file
   (setq cider-repl-history-file (format "%s/.cider-history" user-emacs-directory))
   ;; nicer font lock in REPL
@@ -73,6 +74,9 @@
   (setq cider-repl-history-size 3000)
   ;; nice pretty printing
   (setq cider-repl-use-pretty-printing t)
+  ;; set the pretty printer fn
+  ;; (setq cider-pprint-fn 'fipp)
+  ;; (setq cider-pprint-fn "cider.nrepl.pprint/pprint")
 
   (add-hook 'cider-mode-hook 'clj-refactor-mode)
   ;; eldoc for clojure
@@ -123,6 +127,15 @@
   (add-hook 'clojure-mode-hook    'hl-sexp-mode)
   (add-hook 'lisp-mode-hook       'hl-sexp-mode)
   (add-hook 'emacs-lisp-mode-hook 'hl-sexp-mode))
+#+end_src
+
+* Lint
+
+#+begin_src emacs-lisp
+(use-package flycheck-joker
+  ;; https://github.com/candid82/joker
+  ;; brew install candid82/brew/joker
+  :ensure t)
 #+end_src
 
 * Arcadia

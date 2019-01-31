@@ -70,7 +70,7 @@
  '(cua-normal-cursor-color "#657b83")
  '(cua-overwrite-cursor-color "#b58900")
  '(cua-read-only-cursor-color "#859900")
- '(custom-enabled-themes (quote (solarized-dark)))
+ '(custom-enabled-themes (quote (solarized-light)))
  '(custom-safe-themes
    (quote
     ("c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
@@ -106,7 +106,7 @@
  '(origami-show-fold-header t t)
  '(package-selected-packages
    (quote
-    (helm-ag quelpa-use-package quelpa intero ox-reveal plantuml-mode org-capture org-agenda quela-use-package quela fic-mode clj-refactor solarized-theme org-plus-contrib use-package)))
+    (powerline helm-ag quelpa-use-package quelpa intero ox-reveal plantuml-mode org-capture org-agenda quela-use-package quela fic-mode clj-refactor solarized-theme org-plus-contrib use-package)))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#eee8d5" 0.2))
