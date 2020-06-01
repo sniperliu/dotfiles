@@ -9,7 +9,7 @@ main () {
     "$ROOT/symlink-common.sh"
 
     if [[ $(uname -s) == "Darwin" ]]; then
-        "$ROOT/macos/config-os.sh"
+        "$ROOT/macos/config-macos.sh"
         "$ROOT/macos/install-apps.sh"
         "$ROOT/macos/config-apps.sh"
     elif [[ $(uname -s) == "Linux" ]]; then

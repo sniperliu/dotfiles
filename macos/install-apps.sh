@@ -17,30 +17,25 @@ if [[ $(brew --version) ]] ; then
     brew update
 else
     echo "Attempting to install Homebrew"
-    ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go/install)"
+    curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh | sh
 fi
 
 # brew
-brew update && brew cleanup && brew cask cleanup
+echo "Brew update & cleanup"
+brew update && brew cleanup 
 
-brew bundle --global
+echo "Brew bundle install"
+brew bundle --global install
 
-# fish
-echo "/usr/local/bin/fish" | sudo tee -a /etc/shells
-chsh -s /usr/local/bin/fish
+# zsh & oh my zsh
+if [ ! -d ~/.oh-my-zsh ]; then
+  echo "Install Oh My Zsh"
+  curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh
+fi
 
-# fisher for completions
-curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs https://git.io/fisher
-fish -c "fisher barnybug/docker-fish-completion"
-fish -c "fisher jethrokuan/fzf"
-
-# fundle
-curl -sfL https://git.io/fundle-install | fish
-
-# oh-my-fish
-curl -L https://get.oh-my.fish | fish
-omf install bobthefish
-
+# Rust
+echo "Install rustup"
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 # app store
 softwareupdate -i -a

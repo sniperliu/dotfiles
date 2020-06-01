@@ -1,6 +1,6 @@
 # Setup my MacOS anywhere
 
-Setup the MacOS everywhere, auto install the development tools mainly fish shell/iTerm/Emacs.
+Setup the MacOS everywhere, auto install the development tools mainly zsh/iTerm/Emacs.
 
 ## Prerequisite
 
@@ -19,7 +19,7 @@ cd dotfiles
 
 ### OS
 
-### Fish Shell
+### Zsh
 
 ### iTerm
 

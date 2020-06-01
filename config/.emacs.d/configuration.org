@@ -1,0 +1,1021 @@
+#+title: Emacs Configuration
+
+* System
+** Package management
+ #+begin_src emacs-lisp
+(setq use-package-always-ensure t
+      backup-directory-alist `((".*" . ,temporary-file-directory))
+      auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
+
+(use-package quelpa-use-package
+  :init
+  (setq quela-update-melpa-p nil))
+
+(quelpa
+ '(quelpa-use-package
+   :fetcher git
+   :url "https://github.com/quelpa/quelpa-use-package.git"))
+(require 'quelpa-use-package)
+ #+end_src
+** Tile window management
+*** exwm
+ #+begin_src emacs-lisp
+;; (add-to-list 'load-path (expand-file-name "xelb" package-user-dir))
+;; (add-to-list 'load-path (expand-file-name "exwm" package-user-dir))
+
+;; (require 'exwm)
+;; (require 'exwm-config)
+;; (exwm-config-default)
+
+ ;(use-package exwm
+ ;  :config
+ ;  (require 'exwm)
+ ;  (require 'exwm-config)
+ ;
+ ;  (exwm-config-default))
+ #+end_src
+** Environment
+
+ #+begin_src emacs-lisp
+ (setq user-full-name "Liu Hao")
+ (setq user-mail-address "sniperliuhao@gmail.com")
+
+ ;; what's this? for x-windows meta key?
+ (set-keyboard-coding-system nil)
+
+ ;; locales to UTF8
+ (set-language-environment 'utf-8)
+ (set-terminal-coding-system 'utf-8)
+ (setq locale-coding-system 'utf-8)
+ (set-default-coding-systems 'utf-8)
+ (set-selection-coding-system 'utf-8)
+ (prefer-coding-system 'utf-8)
+
+ ;; version control
+ (setq vc-follow-symlinks t)
+
+ (use-package exec-path-from-shell
+   :config
+   (when (memq window-system '(mac ns))
+     (exec-path-from-shell-initialize)))
+ #+end_src
+
+* UI
+Load Emacs UI customizations. Here we set up a color theme, enable/disable different interface elemenets and so on.
+** Line number
+ #+begin_src emacs-lisp
+   ;; Show line numbers when run in the graphical mode
+   ;; (when (display-graphic-p)
+   ;;   (global-linum-mode 1))
+
+   ;; Set size of line numbers
+   ;; (defun setup-linum-ui ()
+   ;;   (set-face-attribute 'linum nil :height 100 :foreground "SteelBlue"))
+ #+end_src
+
+** Theme
+ #+begin_src emacs-lisp
+  (use-package zenburn-theme
+    :init (setq active-theme 'zenburn)
+    :config (load-theme active-theme t))
+ #+end_src
+
+** Font
+
+ #+begin_src emacs-lisp
+ ;;(when (window-system)
+ ;;  (set-default-font "Fira Code"))
+ ;; Ligatures hangs eshell
+ ;; (let ((alist '((33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
+ ;;                (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
+ ;;                (36 . ".\\(?:>\\)")
+ ;;                (37 . ".\\(?:\\(?:%%\\)\\|%\\)")
+ ;;                (38 . ".\\(?:\\(?:&&\\)\\|&\\)")
+ ;;                (42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*/>]\\)")
+ ;;                (43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
+ ;;                (45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
+ ;;                (46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
+ ;;                (47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[*/=>]\\)")
+ ;;                (48 . ".\\(?:x[a-zA-Z]\\)")
+ ;;                (58 . ".\\(?:::\\|[:=]\\)")
+ ;;                (59 . ".\\(?:;;\\|;\\)")
+ ;;                (60 . ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\||>\\)\\|[*$+~/<=>|-]\\)")
+ ;;                (61 . ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|[<=>~]\\)")
+ ;;                (62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
+ ;;                (63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
+ ;;                (91 . ".\\(?:]\\)")
+ ;;                (92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
+ ;;                (94 . ".\\(?:=\\)")
+ ;;                (119 . ".\\(?:ww\\)")
+ ;;                (123 . ".\\(?:-\\)")
+ ;;                (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
+ ;;                (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)")
+ ;;                )
+ ;;              ))
+ ;;   (dolist (char-regexp alist)
+ ;;     (set-char-table-range composition-function-table (car char-regexp)
+ ;;                           `([,(cdr char-regexp) 0 font-shape-gstring]))))
+ (set-face-attribute 'default nil :height 130)
+ (setq mac-allow-anti-aliasing t)
+ #+end_src
+
+** Folding
+
+
+ #+begin_src emacs-lisp
+   (use-package origami
+     :ensure quelpa
+     :quelpa (origami :repo "gregsexton/origami.el" :fetcher github)
+     :custom
+     (origami-show-fold-header t)
+
+     :custom-face
+     (origami-fold-replacement-face ((t (:inherit magit-diff-context-highlight))))
+     (origami-fold-fringe-face ((t (:inherit magit-diff-context-highlight))))
+
+     :init
+     (defhydra origami-hydra (:color blue :hint none)
+       "
+         _:_: recursively toggle node       _a_: toggle all nodes    _t_: toggle node
+         _o_: show only current node        _u_: undo                _r_: redo
+         _R_: reset
+         "
+       (":" origami-recursively-toggle-node)
+       ("a" origami-toggle-all-nodes)
+       ("t" origami-toggle-node)
+       ("o" origami-show-only-node)
+       ("u" origami-undo)
+       ("r" origami-redo)
+       ("R" origami-reset))
+
+     :bind (:map origami-mode-map
+                 ("C-:" . origami-hydra/body))
+     :config
+     (face-spec-reset-face 'origami-fold-header-face)
+     (global-origami-mode))
+ #+end_src
+
+** Smart Line
+ #+begin_src emacs-lisp
+   (use-package smart-mode-line
+     :if window-system)
+
+   (use-package smart-mode-line-powerline-theme
+     :if window-system
+     :after smart-mode-line
+     :init (sml/setup)
+     :config (setq sml/theme 'respectful))
+ #+end_src
+
+** Startup
+ #+begin_src emacs-lisp
+ (setq inhibit-startup-screen t)
+ ;; maximaze the frame when startup
+ (add-to-list 'default-frame-alist '(fullscreen . maximized))
+ #+end_src
+
+** Keys
+ #+begin_src emacs-lisp
+ (use-package hydra)
+ #+end_src
+
+** Misc
+ #+begin_src emacs-lisp
+ ;; Disable tool bar
+ (tool-bar-mode -1)
+ ;; Turn off menu bar in console
+ (unless (display-graphic-p)
+   (menu-bar-mode -1))
+ ;; Don't show native OS scroll bars
+ (when (fboundp 'scroll-bar-mode)
+   (scroll-bar-mode -1))
+ ;; Full path in title bar
+ (setq-default frame-title-format "%b (%f)")
+ ;; No cursor blinking
+ (blink-cursor-mode 0)
+ ;; Disable bell
+ (setq ring-bell-function 'ignore)
+ ;; Indicate empty lines
+ (setq-default indicate-empty-lines 1)
+ ;; Disable dialog box
+ (setq use-dialog-box nil)
+ #+end_src
+* Edit
+
+** Company
+ #+begin_src emacs-lisp
+ (use-package company
+   :init
+   (setq company-idle-delay 0.5)
+   (setq company-tooltip-limit 10)
+   (setq company-minimum-prefix-length 2)
+   ;; invert the navigation direction if the completion popup-isearch-match
+   ;; is displayed on top
+   (setq company-tooltip-flip-when-above t)
+   :hook (prog-mode . company-mode)
+   :config
+   (add-hook 'after-init-hook #'global-company-mode))
+ #+end_src
+
+** Snippet
+ #+begin_src emacs-lisp
+ (use-package yasnippet
+   :after company
+   :config
+   ;; Adding yasnippet support to company
+   (add-to-list 'company-backends '(company-yasnippet))
+
+   (yas-global-mode 1))
+
+ (use-package yasnippet-snippets)
+ #+end_src
+
+** Flycheck
+
+ #+begin_src emacs-lisp
+ (use-package flycheck
+   :hook (prog-mode . flycheck-mode)
+   :init
+   (global-flycheck-mode))
+ #+end_src
+
+** Undo-tree
+
+ #+begin_src emacs-lisp
+ (use-package undo-tree
+   :config
+   (undo-tree-mode))
+ #+end_src
+
+** Multi-cursors
+
+ #+begin_src emacs-lisp
+ (use-package multiple-cursors
+  :bind (("C->" . mc/mark-next-like-this)
+         ("C-<" . mc/mark-previous-like-this)
+         ("C-c C-<" . mc/mark-all-like-this)
+         ("C-c C->" . mc/mark-more-like-this-extended)))
+ #+end_src
+
+** Fixme
+
+ #+begin_src emacs-lisp
+ (use-package fic-mode
+   :init (add-hook 'prog-mode-hook 'fic-mode))
+ #+end_src
+
+** Column Indicator
+ #+begin_src emacs-lisp
+ (use-package fill-column-indicator
+   :config
+   (setq fci-rule-column 100)
+   (setq fci-rule-color "#553333")
+   (setq fci-rule-width 5)
+   (setq fci-always-use-textual-rule nil)
+   (turn-on-fci-mode))
+ #+end_src
+
+** Misc
+ #+begin_src emacs-lisp
+ (use-package beacon
+   :init
+   (setq beacon-push-mark 35)
+   (setq beacon-color "#888888")
+   :config
+   (beacon-mode 1))
+
+ (use-package hideshow)
+
+ (use-package expand-region)
+
+ (use-package rainbow-delimiters)
+
+ ;; Ask "y" or "n" instead of "yes" or "no". Yes, laziness is great.
+ (fset 'yes-or-no-p 'y-or-n-p)
+
+ ;; Highlights matching parenthesis
+ (show-paren-mode t)
+
+ ;; Highlight tabulations
+ (setq-default highlight-tabs t)
+
+ ;; Show trailing white spaces
+ (setq-default show-trailing-whitespace t)
+
+ ;; Delete trailing whitespaces when saving file
+ (add-hook 'before-save-hook 'whitespace-cleanup)
+ (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+ ;; Disable backups and auto save, use VCS instead!
+ (setq make-backup-files nil)
+ (setq backup-inhibited t)
+ (setq auto-save-default nil)
+
+ ;; Show column numbers in mode line
+ (column-number-mode 1)
+
+ ;; don't use tabs for indent
+ (setq-default indent-tabs-mode nil)
+ (setq-default tab-width 2)
+ #+end_src
+* Navigation
+Customizations for easier navigation between files and buffers
+** Projectile
+ #+begin_src emacs-lisp
+ (use-package projectile
+   :bind-keymap (("s-p"   . projectile-command-map)
+                 ("C-c p" . projectile-command-map))
+   :config
+   (projectile-mode +1)
+   (setq projectile-enable-caching t))
+
+ (use-package helm
+   :bind (("M-x" . helm-M-x)
+          ("C-x C-f" . helm-find-files)
+          ("C-x f" . helm-recentf))
+   :config
+   (helm-mode 1))
+
+ (use-package helm-projectile
+   :after (helm projectile)
+   :config
+   (helm-projectile-on))
+
+ (use-package ag)
+
+ (use-package helm-ag)
+ #+end_src
+
+** Ivy
+ #+begin_src emacs-lisp
+   (use-package counsel
+     :bind
+     ("M-x" . 'counsel-M-x)
+     ("C-s" . 'swiper)
+
+     :config
+     (use-package flx)
+     (use-package smex)
+
+     (ivy-mode 1)
+     (setq ivy-use-virtual-buffers t)
+     (setq ivy-count-format "(%d/%d) ")
+     (setq ivy-initial-inputs-alist nil)
+     (setq ivy-re-builders-alist
+           '((swiper . ivy--regex-plus)
+             (t . ivy--regex-fuzzy))))
+ #+end_src
+
+** Git
+ #+begin_src emacs-lisp
+ (use-package magit
+   :bind ("C-x g" . magit-status))
+
+ (use-package forge
+   :disabled)
+
+ (use-package git-gutter)
+ #+end_src
+
+** Window
+
+ #+begin_src emacs-lisp
+ (use-package ace-window
+   :bind* ("M-o" . ace-window)
+   :init (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+ #+end_src
+
+** Key
+
+#+begin_src emacs-lisp
+(use-package which-key
+  :config
+  (which-key-mode 1))
+#+end_src
+
+** Cursor
+
+ #+begin_src emacs-lisp
+ (use-package ace-jump-mode
+   :disabled t
+   :bind ("C-c <SPC>" . ace-jump-mode))
+
+ (use-package avy
+   :bind ("C-." . avy-goto-word-1)
+   :config (setq avy-all-windows nil))
+
+ (use-package expand-region
+   :bind ("C-=" . er/expand-region))
+ #+end_src
+
+** Misc
+ #+begin_src emacs-lisp
+ (use-package ido
+   :config
+   ;; Allow partial matches, e.g. "ne" will match navigation.el in this
+   ;; directory
+   (setq ido-enable-flex-matching t)
+   ;; Turn this behavior off because it's annoying, e.g. when pressing
+   ;; C-x C-f to create a new file, don't try to use existing
+   ;; files/buffers names
+   (setq ido-use-filename-at-point nil)
+   ;; Ido everywhere, even in dired
+   (ido-everywhere t)
+   ;; Easier navigation with C-x C-f
+   (ido-mode -1))
+
+ (use-package ido-vertical-mode
+   :after (ido)
+   :config
+   ;; Enable vertical mode for ido
+   (ido-vertical-mode 1))
+
+ ;; Use ibuffer for displaying currenly opened buffers list
+ (global-set-key (kbd "C-x C-b") 'ibuffer)
+
+ ;; unset some global key bindings
+ (global-unset-key "\C-o")
+
+ ;; short-cut to open the init.el
+ (global-set-key "\C-oC" (lambda ()
+                           (interactive)
+                           (find-file "~/.emacs.d/init.el")))
+ #+end_src
+
+* Org-mode
+** General
+
+ #+begin_src emacs-lisp
+ (use-package org
+   :config
+   (global-set-key "\C-cl" 'org-store-link)
+   (global-set-key "\C-ca" 'org-agenda)
+
+   ;; shortcut key to open toplevel file
+   (global-set-key "\C-oO" (lambda ()
+                             (interactive)
+                             (find-file "~/Dropbox/org/GTD/newgtd.org")))
+
+   ;; Export " as " and "
+   (setq org-export-with-smart-quotes t))
+
+(use-package org-bullets
+  :commands (org-bullets-mode)
+  :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+ #+end_src
+
+** Todo
+
+ #+begin_src emacs-lisp
+ (use-package org
+   :config
+   ;; log the todo item closed time
+   (setq org-log-done t)
+   ;; GTD-style TODO states:
+   (setq org-todo-keywords
+     '((sequence "TODO(t)" "STARTED(s)" "NEXT(n)" "SOMEDAY(f)" "|" "DONE(d)")
+       (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING")))
+
+   (setq org-todo-keyword-faces
+     '(("TODO" . org-warning)
+       ("STARTED" . "yellow")
+       ("DONE" . "#5F7F5F")
+       ("ELSEWHERE" . "#5F7F5F")
+       ("CANCELLDED" . "#8CD0D3")))
+   (setq org-use-fast-todo-selection t))
+ #+end_src
+
+** Agenda
+
+ #+begin_src emacs-lisp
+ (use-package org
+   :config
+   ;; remove done tasks from agenda view
+   (setq org-agenda-skip-function-global
+     '(org-agenda-skip-entry-if 'todo '("DONE" "CANCELLED")))
+
+   ;; customize agenda commands
+   (setq org-agenda-custom-commands
+       '(("H" "Office and Home Lists"
+          ((agenda)
+           (tags-todo "OFFICE")
+           (tags-todo "HOME")
+           (tags-todo "COMPUTER")))
+         ("D" "Daily Action List"
+          ((agenda "" ((org-agenda-ndays 1)
+                       (org-agenda-sorting-strategy
+                        '((agenda time-up priority-down tag-up)))
+                       (org-deadline-warning-days 0)))))))
+ ;;        ("P" "Daily Planning List"
+ ;;         ((agenda "" ((org-agenda-ndays 1)
+ ;;                      (org-agenda-sorting-strategy
+ ;;                       '((agenda time-up priority-down tag-up)))
+ ;;                      (org-deadline-warning-days 0)))
+ ;;          (tags-todo nil
+ ;;                     ((org-agenda-overriding-header "Tasks")
+ ;;                      ;; (org-agenda-skip-function 'bh/skip-non-stuck-projects)
+ ;;                      (org-agenda-sorting-strategy '(category-keep))))))))
+
+   ;; refile targets
+   (setq org-refile-targets  '((nil :maxlevel . 9)
+                             (org-agenda-files :maxlevel . 9))))
+ #+end_src
+
+** Capture
+
+ #+begin_src emacs-lisp
+(setq org-export-coding-system 'utf-8)
+
+(use-package org
+  :config
+  ;; Org-Capture
+  (setq org-default-notes-file "~/Dropbox/org/GTD/newgtd.org")
+
+  ;; set org-capture templates
+  (setq org-capture-templates
+        '(("t" "todo" entry (file+headline "~/Dropbox/org/GTD/newgtd.org" "Tasks")
+         "** TODO %^{Task} %^g %?")
+         ("j" "journal" entry (file "~/Dropbox/org/GTD/journal.org")
+          "** %^{Journal} %^g \n:PROPERTIES:\n:Created: %U\n:END:\n\n%?"))))
+ #+end_src
+
+** Export
+*** specs
+
+ #+begin_src emacs-lisp
+ (use-package org
+   :config
+   ;;; Commentary:
+   ;;; configuration for specs writing with org-mode
+   ;;; http://katherine.cox-buday.com/blog/2015/03/14/writing-specs-with-org-mode/
+   ;;; Code:
+   (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((plantuml . t)
+       (ledger . t)
+       (C . t)
+       (clojure . t)))
+
+   ;;; latex export style
+   (unless (boundp 'org-latex-classes)
+     (setq org-latex-classes nil))
+
+   (add-to-list 'org-latex-classes
+           '("specs-style"
+             "\\documentclass{./specs-style}
+              [NO-DEFAULT-PACKAGES]
+              [PACKAGES]
+              [EXTRA]"
+              ("\\section{%s}" . "\\section*{%s}")
+              ("\\subsection{%s}" . "\\subsection*{%s}")
+              ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+              ("\\paragraph{%s}" . "\\paragraph*{%s}")
+              ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+   (add-to-list 'org-latex-classes
+           '("ctexart"
+             "\\documentclass[UTF8]{ctexart}
+              \\usepackage{amsmath,latexsym,amssymb,mathrsfs,pifont}
+              \\usepackage[T1]{fontenc}
+              \\usepackage{fixltx2e}
+              \\usepackage{graphicx}
+              \\usepackage{subfig}
+              \\usepackage{grffile}
+              \\usepackage{longtable}
+              \\usepackage{wrapfig}
+              \\usepackage{rotating}
+              \\usepackage[colorlinks=true]{hyperref}
+              \\tolerance=1000
+              [NO-DEFAULT-PACKAGES]
+              [NO-PACKAGES]"
+              ("\\section{%s}" . "\\section*{%s}")
+              ("\\subsection{%s}" . "\\subsection*{%s}")
+              ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+              ("\\paragraph{%s}" . "\\paragraph*{%s}")
+              ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+   ;;; use xelatex for UTF-8 & Chinese character
+   (setq org-latex-to-pdf-process
+     '("xelatex -interaction nonstopmode -output-directory %o %f"
+       "xelatex -interaction nonstopmode -output-directory %o %f"
+       "xelatex -interaction nonstopmode -output-directory %o %f")))
+
+ (use-package plantuml-mode
+   :config
+   (setq plantuml-jar-path (expand-file-name "/usr/local/Cellar/plantuml/1.2020.8/libexec/plantuml.jar")))
+ #+end_src
+
+ #+RESULTS:
+ : t
+
+*** Presentation
+
+ #+begin_src emacs-lisp
+ (use-package ox-reveal)
+
+ (use-package htmlize)
+ #+end_src
+
+** Share
+
+ #+begin_src emacs-lisp
+   ;;; Commentary: MobileOrg Setup
+   ;; (use-package org
+   ;;   :config
+   ;;   (setq org-directory "~/Dropbox/org/GTD")
+   ;;   (setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
+   ;;   (setq org-mobile-inbox-for-pull "~/Dropbox/org/GTD/from-mobile.org")
+   ;;   ;; auto push & pull
+   ;;   (add-hook 'after-init-hook 'org-mobile-pull)
+   ;;   (add-hook 'kill-emacs-hook 'org-mobile-push))
+ #+end_src
+* Reading
+** General
+
+ #+begin_src emacs-lisp
+ (defvar biblio-dir "~/Dropbox/org/reading/biblio")
+ #+end_src
+
+** PDF
+
+ #+begin_src emacs-lisp
+ (use-package pdf-tools
+   ;; :defer t
+   ;; :after hydra
+   :config
+
+   ;; Install what need to be installed !
+   (pdf-tools-install t t t)
+   ;; open pdfs scaled to fit page
+   (setq-default pdf-view-display-size 'fit-page)
+   ;; automatically annotate highlights
+   (setq pdf-annot-activate-created-annotations t)
+   ;; use normal isearch
+   (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+   ;; more fine-grained zooming
+   (setq pdf-view-resize-factor 1.1)
+
+   (add-hook 'pdf-view-mode-hook
+             (lambda ()
+               (pdf-misc-size-indication-minor-mode)
+               (pdf-links-minor-mode)
+               (pdf-isearch-minor-mode)
+               (cua-mode 0)
+               (linum-mode 0)))
+
+   (add-to-list 'auto-mode-alist (cons "\\.pdf$" 'pdf-view-mode)))
+ #+end_src
+
+** Bibtex
+
+ #+begin_src emacs-lisp
+ (use-package helm-bibtex
+   :defer t
+   :config
+   (setq helm-bibtex-bibliography (expand-file-name "index.bib" biblio-dir) ;; where your references are stored
+         helm-bibtex-library-path (expand-file-name "lib/" biblio-dir) ;; where your pdfs etc are stored
+         helm-bibtex-notes-path (expand-file-name "index.org" biblio-dir) ;; where your notes are stored
+         bibtex-completion-bibliography (expand-file-name "index.bib" biblio-dir) ;; writing completion
+         bibtex-completion-notes-path (expand-file-name "index.org" biblio-dir)))
+ #+end_src
+
+** org
+
+ #+begin_src emacs-lisp
+ (use-package org-ref
+   :disabled
+   :after org
+   :defer t
+   :chords
+   (("uu"  . org-ref-cite-hydra/body))
+   :init
+   (setq org-ref-completion-library 'org-ref-helm-cite
+         org-ref-notes-directory biblio-dir
+         org-ref-bibliography-notes (expand-file-name "index.org" biblio-dir)
+         org-ref-default-bibliography '(expand-file-name "index.bib" biblio-dir)
+         org-ref-pdf-directory (expand-file-name "lib/" biblio-dir))
+
+   :config
+   (add-hook 'org-export-before-parsing-hook 'orcp-citeproc))
+
+ (use-package interleave
+   :bind ("C-x i" . interleave-mode)
+   :config
+   (setq interleave-split-direction 'horizontal
+         interleave-split-lines 20
+         interleave-disable-narrowing t))
+ #+end_src
+** Email
+Refer http://cachestocaches.com/2017/3/complete-guide-email-emacs-using-mu-and-/
+* Development
+** Language Server
+  #+BEGIN_SRC emacs-lisp
+    (use-package lsp-mode
+      :commands lsp
+      :hook (scala-mode . lsp)
+      :config
+      (require 'lsp-clients)
+      (setq lsp-prefer-flymake nil))
+
+    (use-package lsp-ui)
+    (use-package company-lsp :commands company-lsp)
+    (use-package helm-lsp :commands helm-lsp-workspace-symbol)
+    (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+    ;; optionally if you want to use debugger
+    (use-package dap-mode
+      :after lsp-mode
+      :config
+      (dap-mode t)
+      (dap-ui-mode t))
+  #+END_SRC
+** Lisp & Clojure
+*** Cojure mode
+
+  #+begin_src emacs-lisp
+  (use-package clojure-mode
+    :init
+    (add-hook 'clojure-mode-hook #'yas-minor-mode)
+    (add-hook 'clojure-mode-hook #'linum-mode)
+    ;; (add-hook 'clojure-mode-hook 'subword-mode)
+    ;; (add-hook 'clojure-mode-hook 'smartparens-mode)
+    (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
+    (add-hook 'clojure-mode-hook #'eldoc-mode)
+    ;; (add-hook 'clojure-mode-hook 'idle-highlight-mode))
+    :config
+    (sayid-setup-package))
+  #+end_src
+
+*** Paredit
+
+  #+begin_src emacs-lisp
+  (use-package paredit
+    :init
+    (add-hook 'lisp-mode-hook       #'paredit-mode)
+    (add-hook 'emacs-lisp-mode-hook #'paredit-mode)
+    (add-hook 'clojure-mode-hook    #'paredit-mode)
+    (add-hook 'cider-repl-mode-hook #'paredit-mode))
+  #+end_src
+
+*** lispy
+
+  Not sure it works with paredit
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package lispy
+      :disabled)
+  #+END_SRC
+
+*** Parinfer
+
+  Got problem with cider repl and some other issues, disable for now.
+
+  #+begin_src emacs-lisp
+    (use-package parinfer
+      :disabled
+      :bind
+      (("C-," . parinfer-toggle-mode))
+      :init
+      (progn
+        (setq parinfer-extensions
+              '(defaults       ; should be included.
+                pretty-parens  ; different paren styles for different modes.
+                lispy          ; If you use Lispy. With this extension, you should install Lispy and do not enable lispy-mode directly.
+                paredit        ; Introduce some paredit commands.
+                smart-tab      ; C-b & C-f jump positions and smart shift with tab & S-tab.
+                smart-yank))   ; Yank behavior depend on mode.
+        (add-hook 'clojure-mode-hook #'parinfer-mode)
+        (add-hook 'emacs-lisp-mode-hook #'parinfer-mode)
+        (add-hook 'common-lisp-mode-hook #'parinfer-mode)
+        (add-hook 'scheme-mode-hook #'parinfer-mode)
+        (add-hook 'lisp-mode-hook #'parinfer-mode)
+        (add-hook 'cider-repl-mode-hook #'parinfer-mode)))
+  #+end_src
+
+*** Cider
+
+  #+begin_src emacs-lisp
+  (use-package cider
+    :init
+    ;; Clojure mode
+    ;; (setq clojure-indent-style :always-indent)
+    ;; (setq clojure-align-forms-automatically nil)
+    ;; REPL history file
+    (setq cider-repl-history-file (format "%s/.cider-history" user-emacs-directory))
+    ;; nicer font lock in REPL
+    (setq cider-repl-use-clojure-font-lock t)
+    ;; result prefix for the REPL
+    (setq cider-repl-result-prefix ";; => ")
+    ;; never ending REPL history
+    (setq cider-repl-wrap-history t)
+    ;; looong history
+    (setq cider-repl-history-size 3000)
+    ;; nice pretty printing
+    (setq cider-repl-use-pretty-printing t)
+    ;; set the pretty printer fn
+    ;; (setq cider-pprint-fn 'fipp)
+    ;; (setq cider-pprint-fn "cider.nrepl.pprint/pprint")
+    (setq org-babel-clojure-backend 'cider)
+
+    (add-hook 'cider-mode-hook #'clj-refactor-mode)
+    ;; eldoc for clojure
+    (add-hook 'cider-mode-hook #'eldoc-mode)
+
+    (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
+
+    ;; error buffer not popping up
+    (setq cider-show-error-buffer nil)
+
+    ;; company mode for completion
+    (add-hook 'cider-repl-mode-hook #'company-mode)
+    (add-hook 'cider-mode-hook      #'company-mode)
+
+    :bind (("C-c C-t u" . cider-test-run-unit-tests))
+
+    :config
+    (setq-default org-babel-clojure-backend 'cider
+                org-babel-clojure-sync-nrepl-timeout 5000)
+    (defun cider-test-run-unit-tests ()
+      (interactive)
+      (execute-kbd-macro (kbd (concat "C-u C-c C-t p <RET>" "integration" "<RET>")))))
+  #+end_src
+
+  #+RESULTS:
+
+*** clj-refactor
+
+  #+begin_src emacs-lisp
+  (use-package clj-refactor
+    :init
+    (add-hook #'clojure-mode-hook
+      (lambda ()
+        (clj-refactor-mode 1)
+        ;; insert keybinding setup here
+        (cljr-add-keybindings-with-prefix "C-c RET")))
+    (add-hook #'clojure-mode-hook #'yas-minor-mode)
+    ;; no auto sort
+    (setq cljr-auto-sort-ns nil)
+    ;; do not prefer prefixes when using clean-ns
+    (setq cljr-favor-prefix-notation nil))
+  #+end_src
+
+*** sayid
+
+  #+begin_src emacs-lisp
+  (use-package sayid)
+  #+end_src
+
+*** snippet
+
+  #+begin_src emacs-lisp
+  (use-package clojure-snippets
+    :after (yasnippet))
+  #+end_src
+
+*** highlight
+
+  #+begin_src emacs-lisp
+  (use-package hl-sexp
+    :config
+    (add-hook 'clojure-mode-hook    #'hl-sexp-mode)
+    (add-hook 'lisp-mode-hook       #'hl-sexp-mode)
+    (add-hook 'emacs-lisp-mode-hook #'hl-sexp-mode))
+  #+end_src
+
+*** Lint
+
+  #+begin_src emacs-lisp
+  ;; https://github.com/candid82/joker
+  ;; brew install candid82/brew/joker)
+  (use-package flycheck-joker)
+  #+end_src
+
+*** Arcadia
+
+  #+begin_src emacs-lisp
+  (use-package inf-clojure
+    :config
+    (defcustom arcadia-repl-port 5555
+      "Port to connect to Arcadia repl.")
+
+    (defun arcadia-repl ()
+      "Attempts to connect to a running Arcadia instance over the Arcadia socket-repl."
+      (setq completion-at-point-functions nil)
+      (interactive)
+      (inf-clojure-connect "localhost" arcadia-repl-port))
+
+
+    ;; inf-clojure's argslists eldoc support spams the Arcadia repl
+    ;; and slows down emacs. This (removable) empty wrapper function is a
+    ;; quick kludge to disable it.
+    (defun arcadia-inf-clojure-eldoc-setup-wrapper (orig-fun &rest args)
+      )
+
+    ;; Temporary hack that disables eldoc for inf-clojure.
+    (advice-add 'inf-clojure-eldoc-setup :around #'arcadia-inf-clojure-eldoc-setup-wrapper))
+  #+end_src
+** Haskell
+
+ #+begin_src emacs-lisp
+ (use-package intero
+   :config
+   (add-hook 'haskell-mode-hook #'intero-mode))
+ #+end_src
+
+** Markdown
+
+ #+begin_src emacs-lisp
+ (use-package markdown-mode)
+
+ (use-package markdown-preview-mode)
+ #+end_src
+
+** Rust
+
+ #+begin_src emacs-lisp
+ (use-package rust-mode
+   :hook (rust-mode . lsp))
+
+ (use-package toml-mode)
+
+ (use-package cargo
+   :hook (rust-mode . cargo-minor-mode))
+
+ (use-package flycheck-rust
+   :config (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
+ #+end_src
+
+** Scala
+
+ #+begin_src emacs-lisp
+ (use-package scala-mode
+   :mode "\\.s\\(cala\\|bt\\)$")
+
+(use-package sbt-mode
+  :commands sbt-start sbt-command
+  :config
+  ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
+  ;; allows using SPACE when in the minibuffer
+  (substitute-key-definition
+   'minibuffer-complete-word
+   'self-insert-command
+   minibuffer-local-completion-map)
+   ;; sbt-supershell kills sbt-mode:  https://github.com/hvesalai/emacs-sbt-mode/issues/152
+   (setq sbt:program-options '("-Dsbt.supershell=false")))
+ #+end_src
+
+** Java
+
+#+begin_src emacs-lisp
+(use-package cc-mode)
+(use-package lsp-java
+  :after lsp
+  :config (add-hook 'java-mode-hook 'lsp))
+(use-package gradle-mode)
+#+end_src
+
+** Erlang
+   #+begin_src emacs-lisp
+     (use-package erlang
+       :config
+       (add-hook 'erlang-mode-hook
+		 (lambda ()
+		   (setq mode-name "erl"
+			 erlang-compile-extra-opts '((i . "../include"))
+			 erlang-root-dir "/usr/local/lib/erlang"))))
+
+     (use-package edts
+       :init
+       (setq edts-inhibit-package-check t))
+	     ;; edts-man-root "~/.emacs.d/edts/doc/18.2.1"))
+   #+end_src
+
+** Lux
+
+ #+begin_src emacs-lisp
+ ;; (use-package lux-mode
+ ;;   :quelpa '(lux-mode :fetcher github :repo "LuxLang/lux"
+ ;;             :files "lux-mode/" :stable t))
+ #+end_src
+
+** Yaml
+
+ #+begin_src emacs-lisp
+ (use-package yaml-mode
+   :mode "\\.yml\\'")
+ #+end_src
+** Docker
+
+ #+begin_src emacs-lisp
+ (use-package dockerfile-mode
+   :mode "Dockerfile\\'")
+ #+end_src
+* Server
+  #+BEGIN_SRC emacs-lisp
+  (server-start)
+  #+END_SRC
+* Metrics
+  #+BEGIN_SRC emacs-lisp
+  (setq after-init-time (current-time))
+  (message "Config successfully loaded in %s" (emacs-init-time))
+  #+END_SRC
+* Reference
+- https://github.com/hrs/dotfiles/tree/master/emacs/.emacs.d
