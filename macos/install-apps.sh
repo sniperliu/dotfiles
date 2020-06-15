@@ -22,7 +22,7 @@ fi
 
 # brew
 echo "Brew update & cleanup"
-brew update && brew cleanup 
+brew update && brew cleanup
 
 echo "Brew bundle install"
 brew bundle --global install
@@ -36,6 +36,9 @@ fi
 # Rust
 echo "Install rustup"
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+rustup component add rls
+rustup component add rust-analysis
+rustup component add rust-src
 
 # app store
 softwareupdate -i -a
