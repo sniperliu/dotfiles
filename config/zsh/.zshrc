@@ -1,6 +1,6 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
-export PATH="/usr/local/sbin:$PATH"
+export PATH="/usr/local/sbin:/usr/local/opt/make/libexec/gnubin:$PATH"
 
 # Path to your oh-my-zsh installation.
 export ZSH="/Users/haoliu/.oh-my-zsh"
@@ -71,7 +71,7 @@ ZSH_THEME="robbyrussell"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   git
-  osx
+  macos
   ssh-agent
 )
 
@@ -94,6 +94,12 @@ source $ZSH/oh-my-zsh.sh
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
+# multiple JDKs
+export JAVA_HOME=$(/usr/libexec/java_home -v16)
+
+export JAVA_8_HOME=$(/usr/libexec/java_home -v1.8)
+export JAVA_16_HOME=$(/usr/libexec/java_home -v16)
+
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
@@ -103,5 +109,9 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias ls=lsd
+# jdk
+alias java8='export JAVA_HOME=$JAVA_8_HOME'
+alias java16='export JAVA_HOME=$JAVA_16_HOME'
 
+# startship
 eval "$(starship init zsh)"
