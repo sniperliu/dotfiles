@@ -2,14 +2,23 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 export PATH="/usr/local/sbin:/usr/local/opt/make/libexec/gnubin:$PATH"
 
-# Path to your oh-my-zsh installation.
-export ZSH="/Users/haoliu/.oh-my-zsh"
+source /usr/local/share/antigen/antigen.zsh
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="robbyrussell"
+# Load the oh-my-zsh's library.
+antigen use oh-my-zsh
+
+# Plugins from the default oh-my-zsh repo (robbyrussell's oh-my-zsh).
+antigen bundle zsh-users/zsh-syntax-highlighting
+antigen bundle zsh-users/zsh-autosuggestions
+antigen bundle zsh-users/zsh-completions
+antigen theme gentoo
+antigen bundle git
+antigen bundle genpass
+antigen bundle macos
+antigen bundle ssh-agent
+
+# Tell Antigen that you're done.
+antigen apply
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -69,13 +78,6 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(
-  git
-  macos
-  ssh-agent
-)
-
-source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
