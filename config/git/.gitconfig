@@ -1,7 +1,7 @@
 # This is Git's per-user configuration file.
 [user]
-	name = LiuHao
-	email = sniperliuhao@gmail.com
+  name = LiuHao
+  email = sniperliuhao@gmail.com
 # Please adapt and uncomment the following lines:
 [filter "lfs"]
         required = true
@@ -9,4 +9,10 @@
         smudge = git-lfs smudge -- %f
         process = git-lfs filter-process
 [merge]
-	tool = p4merge
+  tool = p4merge
+[core]
+#    editor = emacs -Q -nw
+  editor = emacsclient
+[alias]
+	co = checkout
+	st = status
