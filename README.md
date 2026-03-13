@@ -1,3 +1,5 @@
+# Replaced by [nix-dotfiles](https://github.com/sniperliu/nix-dotfiles)
+
 # Setup my MacOS anywhere
 
 Setup the MacOS everywhere, auto install the development tools mainly zsh/iTerm/Emacs.
